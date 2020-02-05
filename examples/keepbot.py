@@ -59,7 +59,7 @@ def on_nickname_set(event: fbchat.NicknameSet):
 
 
 @listener.register
-def on_people_added(event: fbchat.PeopleAdded):
+def on_people_added(event: fbchat.ParticipantsAdded):
     if old_thread_id != event.thread.id:
         return
     if event.author.id != session.user.id:
@@ -69,7 +69,7 @@ def on_people_added(event: fbchat.PeopleAdded):
 
 
 @listener.register
-def on_person_removed(event: fbchat.PersonRemoved):
+def on_person_removed(event: fbchat.ParticipantRemoved):
     if old_thread_id != event.thread.id:
         return
     # No point in trying to add ourself

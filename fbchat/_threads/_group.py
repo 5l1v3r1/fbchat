@@ -4,7 +4,7 @@ from ._abc import ThreadABC
 from . import _user
 from .._common import attrs_default
 from .. import _util, _session, _graphql, _events, _models
-from typing import Sequence, Iterable, Set, Mapping
+from typing import Sequence, Iterable, Set, Mapping, Optional
 
 
 @attrs_default
@@ -114,17 +114,20 @@ class Group(ThreadABC):
         """
         self._admin_status(user_ids, False)
 
-    def set_title(self, title: str):
+    def set_title(self, title: Optional[str]) -> _events.TitleSet:
         """Change title of the group.
 
         Args:
-            title: New title
+            title: New title. If ``None``, the title is cleared
 
         Example:
             >>> group.set_title("Abc")
         """
         data = {"thread_name": title, "thread_id": self.id}
-        j = self.session._payload_post("/messaging/set_thread_name/?dpr=1", data)
+        self.session._payload_post("/messaging/set_thread_name/?dpr=1", data)
+        return _events.TitleSet(
+            author=self.session.user, thread=self._copy(), title=title, at=None
+        )
 
     def set_image(self, image_id: str):
         """Change the group image from an image id.
